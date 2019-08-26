@@ -18,10 +18,10 @@
 (spacemacs|define-jump-handlers python-mode)
 (spacemacs|define-jump-handlers cython-mode anaconda-mode-goto)
 
-(defvar python-enable-yapf-format-on-save nil
+(defvar python-enable-yapf-format-on-save t
   "If non-nil, automatically format code with YAPF on save.")
 
-(defvar python-test-runner 'nose
+(defvar python-test-runner 'pytest
   "Test runner to use. Possible values are `nose' or `pytest'.")
 
 (defvar python-fill-column 79
@@ -35,10 +35,10 @@
 
 Possible values are `on-visit', `on-project-switch' or `nil'.")
 
-(defvar python-auto-set-local-pyvenv-virtualenv 'on-visit
+(defvar python-auto-set-local-pyvenv-virtualenv 'nil
   "Automatically set pyvenv virtualenv from \".venv\".
 
 Possible values are `on-visit', `on-project-switch' or `nil'.")
 
-(defvar python-sort-imports-on-save nil
+(defvar python-sort-imports-on-save t
   "If non-nil, automatically sort imports on save.")
