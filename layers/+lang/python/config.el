@@ -32,11 +32,11 @@ and `mspyls'")
   "The formatter to use. Possible values are `yapf' and
   `black'.")
 
-(defvar python-format-on-save nil
+(defvar python-format-on-save  t
   "If non-nil, automatically format code with formatter selected
   via `python-formatter' on save.")
 
-(defvar python-test-runner 'nose
+(defvar python-test-runner 'pytest
   "Test runner to use. Possible values are `nose' or `pytest'.")
 
 (defvar python-save-before-test t
@@ -61,7 +61,7 @@ Possible values are `on-visit', `on-project-switch' or `nil'.")
 
 Possible values are `on-visit', `on-project-switch' or `nil'.")
 
-(defvar python-sort-imports-on-save nil
+(defvar python-sort-imports-on-save t
   "If non-nil, automatically sort imports on save.")
 
 (defvar spacemacs--python-pyenv-modes nil
