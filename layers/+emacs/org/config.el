@@ -16,7 +16,7 @@
 
 ;; Variables
 
-(defvar org-want-todo-bindings nil
+(defvar org-want-todo-bindings t 
   "If non-nil, evil-org's todo bindings are activated.")
 
 (defvar org-enable-bootstrap-support nil
@@ -28,7 +28,7 @@
 (defvar org-enable-reveal-js-support nil
   "If non-nil, enable export to reveal.js.")
 
-(defvar org-projectile-file "TODOs.org"
+(defvar org-projectile-file "~/Documents/Dropbox/emacs/tasks.org"
   "The file to store project TODOs in. If this is a relative
 path, one file per project is used (and the path is relative to
 the project root). If it an absolute path, one global file is
@@ -52,3 +52,4 @@ used.")
 (defvar org-enable-jira-support nil
   "If non-nil, Jira (https://www.atlassian.com/software/jira) related packages
 are configured.")
+
