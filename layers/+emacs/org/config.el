@@ -34,7 +34,7 @@ path, one file per project is used (and the path is relative to
 the project root). If it an absolute path, one global file is
 used.")
 
-(defvar org-enable-org-journal-support nil
+(defvar org-enable-org-journal-support t 
   "If non-nil org-journal is configured.")
 
 (defvar org-enable-sticky-header nil
