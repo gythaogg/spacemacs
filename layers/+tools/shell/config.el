@@ -25,24 +25,24 @@
   "Default shell to use in Spacemacs. Possible values are `eshell' (default),
 `shell', `term', `ansi-term', `multi-term' and `vterm'.")
 
-(defvar shell-default-position 'bottom
+(defvar shell-default-position 'full
   "Position of the shell. Possible values are `top', `bottom', `full',
 `left' and `right'.")
 
-(defvar shell-default-height 20
+(defvar shell-default-height 100 
   "Height in percents for the shell window.")
 
-(defvar shell-default-width 30
+(defvar shell-default-width  100   
   "Width in percents for the shell window.")
 
 (defvar shell-default-term-shell shell-file-name
   "Default shell to use in `term' and `ansi-term' shells.")
 
-(defvar shell-enable-smart-eshell nil
+(defvar shell-enable-smart-eshell t
   "If non-nil then `em-smart' is enabled. `em-smart' allows to quickly review
 commands, modify old commands or enter a new one.")
 
-(defvar shell-protect-eshell-prompt nil 
+(defvar shell-protect-eshell-prompt t 
   "If non-nil then eshell's prompt is protected. This means that
 movement to the prompt is inhibited like for `comint-mode'
 prompts and the prompt is made read-only")
