@@ -16,7 +16,7 @@
 
 ;; Variables
 
-(defvar org-want-todo-bindings t 
+(defvar org-want-todo-bindings nil
   "If non-nil, evil-org's todo bindings are activated.")
 
 (defvar org-enable-bootstrap-support nil
@@ -37,7 +37,7 @@ used.")
 (defvar org-enable-org-journal-support t 
   "If non-nil org-journal is configured.")
 
-(defvar org-enable-sticky-header nil
+(defvar org-enable-sticky-header t
   "If non-nil org-sticky-header is configured.")
 
 (defvar org-enable-hugo-support nil
@@ -52,4 +52,5 @@ used.")
 (defvar org-enable-jira-support nil
   "If non-nil, Jira (https://www.atlassian.com/software/jira) related packages
 are configured.")
+
 
