@@ -9,22 +9,36 @@
 ;;
 ;;; License: GPLv3
 
+(defun spacemacs//python-backend ()
+  "Returns selected backend."
+  (if python-backend
+      python-backend
+    (cond
+     ((configuration-layer/layer-used-p 'lsp) 'lsp)
+     (t 'anaconda))))
+
 (defun spacemacs//python-setup-backend ()
   "Conditionally setup python backend."
   (when python-pipenv-activate (pipenv-activate))
-  (pcase python-backend
+  (pcase (spacemacs//python-backend)
     (`anaconda (spacemacs//python-setup-anaconda))
     (`lsp (spacemacs//python-setup-lsp))))
 
 (defun spacemacs//python-setup-company ()
   "Conditionally setup company based on backend."
-  (if (eq python-backend `anaconda)
-    (spacemacs//python-setup-anaconda-company)
-    (spacemacs//python-setup-lsp-company)))
+  (pcase (spacemacs//python-backend)
+    (`anaconda (spacemacs//python-setup-anaconda-company))
+    (`lsp (spacemacs//python-setup-lsp-company))))
+
+(defun spacemacs//python-setup-dap ()
+  "Conditionally setup elixir DAP integration."
+  ;; currently DAP is only available using LSP
+  (pcase (spacemacs//python-backend)
+    (`lsp (spacemacs//python-setup-lsp-dap))))
 
 (defun spacemacs//python-setup-eldoc ()
   "Conditionally setup eldoc based on backend."
-  (pcase python-backend
+  (pcase (spacemacs//python-backend)
     ;; lsp setup eldoc on its own
     (`anaconda (spacemacs//python-setup-anaconda-eldoc))))
 
@@ -65,13 +79,7 @@
         (when (eq python-lsp-server 'mspyls)
           (require 'lsp-python-ms))
         (lsp))
-    (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile."))
-  (if (configuration-layer/layer-used-p 'dap)
-    (progn
-      (require 'dap-python)
-      (spacemacs/set-leader-keys-for-major-mode 'python-mode "db" nil)
-      (spacemacs/dap-bind-keys-for-mode 'python-mode))
-    (message "`dap' layer is not installed, please add `dap' layer to your dotfile.")))
+    (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
 
 (defun spacemacs//python-setup-lsp-company ()
   "Setup lsp auto-completion."
@@ -84,6 +92,10 @@
           :call-hooks t)
         (company-mode))
     (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
+
+(defun spacemacs//python-setup-lsp-dap ()
+  "Setup DAP integration."
+  (require 'dap-python))
 
 
 ;; others
@@ -214,22 +226,28 @@ as the pyenv version then also return nil. This works around https://github.com/
                    version file-path))))))
 
 (defun spacemacs//pyvenv-mode-set-local-virtualenv ()
-  "Set pyvenv virtualenv from \".venv\" by looking in parent directories. handle directory or file"
+  "Set pyvenv virtualenv from \".venv\" by looking in parent directories.
+Handle \".venv\" being a virtualenv directory or a file specifying either
+absolute or relative virtualenv path. Relative path is checked relative to
+location of \".venv\" file, then relative to pyvenv-workon-home()."
   (interactive)
-  (let ((root-path (locate-dominating-file default-directory
-                                           ".venv")))
+  (let ((root-path (locate-dominating-file default-directory ".venv")))
     (when root-path
-      (let* ((file-path (expand-file-name ".venv" root-path))
-             (virtualenv
-              (if (file-directory-p file-path)
-                  file-path
-                (with-temp-buffer
-                  (insert-file-contents-literally file-path)
-                  (buffer-substring-no-properties (line-beginning-position)
-                                                  (line-end-position))))))
-        (if (file-directory-p virtualenv)
-            (pyvenv-activate virtualenv)
-          (pyvenv-workon virtualenv))))))
+      (let ((file-path (expand-file-name ".venv" root-path)))
+        (if (file-directory-p file-path)
+            (pyvenv-activate file-path)
+          (let* ((virtualenv-path-in-file
+                  (with-temp-buffer
+                    (insert-file-contents-literally file-path)
+                    (buffer-substring-no-properties (line-beginning-position)
+                                                    (line-end-position))))
+                 (virtualenv-abs-path
+                  (if (file-name-absolute-p virtualenv-path-in-file)
+                      virtualenv-path-in-file
+                    (format "%s/%s" root-path virtualenv-path-in-file))))
+            (if (file-directory-p virtualenv-abs-path)
+                (pyvenv-activate virtualenv-abs-path)
+              (pyvenv-workon virtualenv-path-in-file))))))))
 
 
 ;; Tests
@@ -354,7 +372,7 @@ to be called for each testrunner. "
   "Bind the python formatter keys.
 Bind formatter to '==' for LSP and '='for all other backends."
   (spacemacs/set-leader-keys-for-major-mode 'python-mode
-    (if (eq python-backend 'lsp)
+    (if (eq (spacemacs//python-backend) 'lsp)
         "=="
       "=") 'spacemacs/python-format-buffer))
 
